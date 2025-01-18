@@ -1,4 +1,4 @@
-# LoveChunks
+# LöveBytes
 Just a place for my Löve tests/experiences
 
 ## 2^11
