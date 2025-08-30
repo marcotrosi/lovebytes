@@ -202,6 +202,11 @@ end -- >>>
 
 function love.load() -- <<<
 
+   Controllers = love.joystick.getJoysticks()
+   for _,c in ipairs(Controllers) do
+      print(c:getName())
+   end
+
    math.randomseed(os.time())
    CurrentState = 'menu'
 
@@ -340,7 +345,18 @@ function love.load() -- <<<
             if Shifted then addField() end
             calcTextPos()
             if not isShiftable() then CurrentState = 'gameover' end
-         end
+         end,
+
+         ['joystickpressed'] = function(joystick, button)
+            local Shifted = false
+            if (button == 14) then Shifted = shiftLeft()  end
+            if (button == 15) then Shifted = shiftRight() end
+            if (button == 12) then Shifted = shiftUp()    end
+            if (button == 13) then Shifted = shiftDown()  end
+            if Shifted then addField() end
+            calcTextPos()
+            if not isShiftable() then CurrentState = 'gameover' end
+         end,
       }, -- >>>
 
       ['gameover'] = -- <<<
@@ -388,4 +404,14 @@ function love.keypressed(key, sc, isrepeat) -- <<<
    end
 end -- >>>
 
+function love.joystickpressed(joystick, button)
+   print(button)
+   if button == 1 then
+      love.event.quit()
+   else
+      if State[CurrentState].joystickpressed then
+         State[CurrentState].joystickpressed(joystick, button)
+      end
+   end
+end
 -- vim: fdm=marker fmr=<<<,>>>
